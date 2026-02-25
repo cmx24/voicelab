@@ -36,3 +36,9 @@ __pycache__/
 *.pyc
 *.pyo
 .pytest_cache/
+
+# Python virtual environment (created by install.bat)
+backend/venv/
+
+# Installer log
+install_log.txt
