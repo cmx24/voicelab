@@ -7,7 +7,7 @@ import json
 import shutil
 import uuid
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -27,16 +27,16 @@ class VoiceBank:
 
     def _ensure_json(self):
         if not self.json_path.exists():
-            self.json_path.write_text(json.dumps({"voices": []}, indent=2))
+            self.json_path.write_text(json.dumps({"voices": []}, indent=2), encoding="utf-8")
 
     def _load(self) -> dict:
         try:
-            return json.loads(self.json_path.read_text())
+            return json.loads(self.json_path.read_text(encoding="utf-8"))
         except Exception:
             return {"voices": []}
 
     def _save(self, data: dict):
-        self.json_path.write_text(json.dumps(data, indent=2))
+        self.json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
     def add_voice(
         self,
@@ -59,7 +59,7 @@ class VoiceBank:
             "language": language,
             "description": description,
             "reference_file": str(dest.relative_to(self.base)),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         data = self._load()

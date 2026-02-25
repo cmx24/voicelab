@@ -13,6 +13,7 @@ Endpoints:
 """
 
 import os
+import shutil
 import uuid
 import logging
 import tempfile
@@ -109,7 +110,6 @@ def generate_tts(req: GenerateRequest):
     except Exception as e:
         logger.error(f"Mood processing error: {e}")
         # Fall back to raw output if mood processing fails
-        import shutil
         shutil.copy2(raw_path, out_path)
     finally:
         try:
@@ -147,7 +147,7 @@ async def clone_voice(
         tmp_path = tmp.name
 
     # Normalize to WAV 44100 Hz 16-bit for storage
-    wav_path = tmp_path.replace(ext, ".wav") if ext != ".wav" else tmp_path + "_norm.wav"
+    wav_path = str(Path(tmp_path).with_suffix('.wav')) if ext != ".wav" else tmp_path + "_norm.wav"
     try:
         normalize_wav(tmp_path, wav_path)
     except Exception as e:

@@ -76,7 +76,6 @@ def apply_mood(
         output_path
     """
     import librosa
-    import scipy.signal
 
     mood = mood if mood in MOOD_PARAMS else "normal"
     # Normalize intensity to [0, 1] range; intensity=3 → factor=0.5
