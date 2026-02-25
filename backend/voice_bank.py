@@ -7,7 +7,7 @@ import json
 import shutil
 import uuid
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -59,7 +59,7 @@ class VoiceBank:
             "language": language,
             "description": description,
             "reference_file": str(dest.relative_to(self.base)),
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
         data = self._load()

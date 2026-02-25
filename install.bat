@@ -126,7 +126,6 @@ if not defined PYTHON_CMD (
     echo        Download from: https://www.python.org/downloads/
     echo        Make sure to check "Add Python to PATH" during installation.
     echo.
-    set /a ERRORS+=1
     goto :eof
 )
 
@@ -139,13 +138,11 @@ for /f "tokens=1,2 delims=." %%A in ("!PY_VERSION!") do (
 
 if !PY_MAJOR! lss %MIN_PYTHON_MAJOR% (
     call :fail "Python !PY_VERSION! found - need %MIN_PYTHON_MAJOR%.%MIN_PYTHON_MINOR%+"
-    set /a ERRORS+=1
     goto :eof
 )
 if !PY_MAJOR! equ %MIN_PYTHON_MAJOR% (
     if !PY_MINOR! lss %MIN_PYTHON_MINOR% (
         call :fail "Python !PY_VERSION! found - need %MIN_PYTHON_MAJOR%.%MIN_PYTHON_MINOR%+"
-        set /a ERRORS+=1
         goto :eof
     )
 )
@@ -158,7 +155,6 @@ goto :eof
 %PYTHON_CMD% -m pip --version >nul 2>&1
 if !errorlevel! neq 0 (
     call :fail "pip not found. Run: %PYTHON_CMD% -m ensurepip"
-    set /a ERRORS+=1
     goto :eof
 )
 for /f "tokens=2" %%V in ('%PYTHON_CMD% -m pip --version 2^>^&1') do (
@@ -177,7 +173,6 @@ if !errorlevel! neq 0 (
     echo        Node.js %MIN_NODE_MAJOR%+ is required.
     echo        Download from: https://nodejs.org/
     echo.
-    set /a ERRORS+=1
     goto :eof
 )
 for /f "tokens=1" %%V in ('node --version 2^>^&1') do set "NODE_VERSION=%%V"
@@ -185,7 +180,6 @@ set "NODE_MAJOR=!NODE_VERSION:v=!"
 for /f "tokens=1 delims=." %%M in ("!NODE_MAJOR!") do set "NODE_MAJOR=%%M"
 if !NODE_MAJOR! lss %MIN_NODE_MAJOR% (
     call :fail "Node.js !NODE_VERSION! found - need v%MIN_NODE_MAJOR%+"
-    set /a ERRORS+=1
     goto :eof
 )
 call :ok "Node.js !NODE_VERSION!"
@@ -196,7 +190,6 @@ goto :eof
 npm --version >nul 2>&1
 if !errorlevel! neq 0 (
     call :fail "npm not found (should come with Node.js)."
-    set /a ERRORS+=1
     goto :eof
 )
 for /f "tokens=1" %%V in ('npm --version 2^>^&1') do call :ok "npm %%V"
@@ -213,7 +206,6 @@ echo        Creating venv at: %VENV_DIR%
 %PYTHON_CMD% -m venv "%VENV_DIR%" >> "%LOG_FILE%" 2>&1
 if !errorlevel! neq 0 (
     call :fail "Failed to create virtual environment."
-    set /a ERRORS+=1
     goto :eof
 )
 call :ok "Virtual environment created."
@@ -235,7 +227,6 @@ if !errorlevel! equ 0 (
     "%PIP%" install torch torchaudio --index-url https://download.pytorch.org/whl/cpu >> "%LOG_FILE%" 2>&1
     if !errorlevel! neq 0 (
         call :fail "PyTorch installation failed. Check install_log.txt for details."
-        set /a ERRORS+=1
         goto :eof
     )
     call :ok "PyTorch (CPU) installed."
@@ -250,7 +241,6 @@ if !errorlevel! equ 0 (
     "%PIP%" install "coqui-tts[codec]" "transformers>=4.57.0,<5.0.0" >> "%LOG_FILE%" 2>&1
     if !errorlevel! neq 0 (
         call :fail "Coqui TTS installation failed. Check install_log.txt for details."
-        set /a ERRORS+=1
         goto :eof
     )
     call :ok "Coqui TTS installed."
@@ -261,7 +251,6 @@ echo        Installing remaining backend requirements...
 "%PIP%" install -r "%BACKEND_DIR%\requirements.txt" >> "%LOG_FILE%" 2>&1
 if !errorlevel! neq 0 (
     call :fail "requirements.txt installation failed. Check install_log.txt for details."
-    set /a ERRORS+=1
     goto :eof
 )
 call :ok "All Python packages installed."
@@ -274,7 +263,6 @@ pushd "%REPO_DIR%"
 call npm install >> "%LOG_FILE%" 2>&1
 if !errorlevel! neq 0 (
     call :fail "npm install failed. Check install_log.txt for details."
-    set /a ERRORS+=1
     popd
     goto :eof
 )
@@ -284,7 +272,6 @@ echo        Building frontend (production)...
 call npm run build >> "%LOG_FILE%" 2>&1
 if !errorlevel! neq 0 (
     call :fail "Frontend build failed. Check install_log.txt for details."
-    set /a ERRORS+=1
     popd
     goto :eof
 )
