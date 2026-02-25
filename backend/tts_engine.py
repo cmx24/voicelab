@@ -86,7 +86,7 @@ class TTSEngine:
                 return
             self._status = "loading"
 
-        logger.info("Loading XTTS-v2 model…")
+        logger.info("Loading XTTS-v2 model...")
         try:
             from TTS.api import TTS
             tts = TTS(MODEL_NAME, progress_bar=False)
@@ -94,7 +94,7 @@ class TTSEngine:
                 self._tts = tts
                 self._status = "ready"
                 self._backend = "xtts"
-            logger.info("XTTS-v2 loaded ✓")
+            logger.info("XTTS-v2 loaded.")
         except Exception as e:
             logger.warning(f"XTTS-v2 unavailable: {e}. Falling back to espeak-ng.")
             if shutil.which("espeak-ng"):
@@ -102,7 +102,7 @@ class TTSEngine:
                     self._status = "ready"
                     self._backend = "espeak"
                     self._error_msg = str(e)
-                logger.info("Using espeak-ng fallback ✓")
+                logger.info("Using espeak-ng fallback.")
             else:
                 with self._lock:
                     self._status = "error"
