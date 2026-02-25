@@ -54,14 +54,14 @@ echo  ===============================================================
 echo.
 
 :: Start backend in a new window
-start "VoiceLab Backend" cmd /k "cd /d "%BACKEND_DIR%" && set COQUI_TOS_AGREED=1 && "%VENV_PYTHON%" -m uvicorn main:app --host 0.0.0.0 --port %BACKEND_PORT%"
+start "VoiceLab Backend" cmd /k cd /d "%BACKEND_DIR%" ^&^& set COQUI_TOS_AGREED=1 ^&^& "%VENV_PYTHON%" -m uvicorn main:app --host 0.0.0.0 --port %BACKEND_PORT%
 
 :: Wait briefly for backend to start
 echo  Waiting for backend to initialise...
 timeout /t 3 /nobreak >nul
 
 :: -- Start frontend dev server --------------------------------
-start "VoiceLab Frontend" cmd /k "cd /d "%REPO_DIR%" && npm run dev"
+start "VoiceLab Frontend" cmd /k cd /d "%REPO_DIR%" ^&^& npm run dev
 
 :: Wait for frontend
 echo  Waiting for frontend to initialise...

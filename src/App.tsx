@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { GenerateTab } from './components/GenerateTab'
 import { CloneTab } from './components/CloneTab'
 import { VoiceBankTab } from './components/VoiceBankTab'
@@ -18,28 +18,14 @@ export default function App() {
   const [voices, setVoices] = useState<Voice[]>([])
   const [modelStatus, setModelStatus] = useState<ModelStatus | null>(null)
 
-  const loadVoices = useCallback(async () => {
-    try {
-      const list = await api.listVoices()
-      setVoices(list)
-    } catch { /* backend not yet available */ }
-  }, [])
-
-  const pollStatus = useCallback(async () => {
-    try {
-      const s = await api.getStatus()
-      setModelStatus(s)
-    } catch { /* ignore */ }
-  }, [])
-
   useEffect(() => {
-    loadVoices()
-    pollStatus()
-    const interval = setInterval(async () => {
-      await pollStatus()
+    api.listVoices().then(setVoices).catch(() => {})
+    api.getStatus().then(setModelStatus).catch(() => {})
+    const interval = setInterval(() => {
+      api.getStatus().then(setModelStatus).catch(() => {})
     }, 5000)
     return () => clearInterval(interval)
-  }, [loadVoices, pollStatus])
+  }, [])
 
   const handleVoiceSaved = (v: Voice) => {
     setVoices(prev => [v, ...prev])

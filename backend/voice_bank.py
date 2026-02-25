@@ -27,16 +27,16 @@ class VoiceBank:
 
     def _ensure_json(self):
         if not self.json_path.exists():
-            self.json_path.write_text(json.dumps({"voices": []}, indent=2))
+            self.json_path.write_text(json.dumps({"voices": []}, indent=2), encoding="utf-8")
 
     def _load(self) -> dict:
         try:
-            return json.loads(self.json_path.read_text())
+            return json.loads(self.json_path.read_text(encoding="utf-8"))
         except Exception:
             return {"voices": []}
 
     def _save(self, data: dict):
-        self.json_path.write_text(json.dumps(data, indent=2))
+        self.json_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
     def add_voice(
         self,
