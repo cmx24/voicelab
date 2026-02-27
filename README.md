@@ -49,14 +49,47 @@ voicelab/
 
 ---
 
-## Quick Start
+## Prerequisites
 
-### 1 — Backend
+| Tool | Minimum version | Notes |
+|------|----------------|-------|
+| **Python** | 3.10+ | [python.org](https://www.python.org/downloads/) — tick *"Add Python to PATH"* on Windows |
+| **Node.js** | 18+ | [nodejs.org](https://nodejs.org/) |
+| **espeak-ng** | any | Optional but recommended for instant offline fallback — [install guide](#espeak-ng) |
+
+---
+
+## Building from Source
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/cmx24/voicelab.git
+cd voicelab
+```
+
+### Windows — one-click setup
+
+```bat
+install.bat   # installs all dependencies and builds the frontend
+start.bat     # starts backend + frontend and opens the browser
+```
+
+`install.bat` creates a Python virtual environment under `backend/venv/`, installs PyTorch, Coqui TTS, and all other deps, then runs `npm install && npm run build`. You only need to run it once.
+
+### Manual setup (Windows / macOS / Linux)
+
+#### 1 — Backend
 
 ```bash
 cd backend
 
+# Create and activate a virtual environment (recommended)
+python -m venv venv
+# Windows:  venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
+
 # Install Python deps
+pip install --upgrade pip
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 pip install "coqui-tts[codec]" "transformers>=4.57.0,<5.0.0"
 pip install -r requirements.txt
@@ -69,7 +102,7 @@ COQUI_TOS_AGREED=1 python -m uvicorn main:app --host 0.0.0.0 --port 8000
 > The API returns `{ "backend": "espeak" }` until the model is ready —  
 > generation still works via espeak-ng so you can test immediately.
 
-### 2 — Frontend
+#### 2 — Frontend
 
 ```bash
 # From repo root
@@ -78,6 +111,16 @@ npm run dev       # dev server at http://localhost:5173
 # or
 npm run build && npm run preview   # production preview
 ```
+
+### espeak-ng
+
+espeak-ng provides an always-available offline TTS fallback while XTTS-v2 downloads.
+
+| OS | Install command |
+|----|----------------|
+| **Ubuntu / Debian** | `sudo apt install espeak-ng` |
+| **macOS** | `brew install espeak` |
+| **Windows** | Download the installer from [espeak-ng releases](https://github.com/espeak-ng/espeak-ng/releases) and add it to `PATH` |
 
 ---
 
